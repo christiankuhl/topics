@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- <meta charset="utf-8"> -->
+    <meta charset="utf-8">
     <title>Topic Graph</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    </head>
-  <link type="text/css" rel="stylesheet" href="graph.css"/>
+    <script src="sidenav.js"></script>
+    <link type="text/css" rel="stylesheet" href="graph.css"/>
+    <link type="text/css" rel="stylesheet" href="sidenav.css"/>
   </head>
   <body>
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <div id="checkboxes">
+        #INPUTS#
+      </div>
+    </div>
+    <span onclick="openNav()" class="ui-button">Filter Topics</span>
     <div id="chart"></div>
-    <script type="text/javascript" src="graph.js"></script>
-    <fieldset>
-      <legend>Topics</legend>
-      #INPUTS#
-    </fieldset>
+      <script type="text/javascript" src="graph.js"></script>
+    </div>
   </body>
 </html>

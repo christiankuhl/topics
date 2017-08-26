@@ -3,7 +3,7 @@ Zinskonditonen CFM/CML;2017;BCBS239;;;in progress;medium;high;BCBS239;;;;;;;;;;;
 Reporting Area Market Risk;2017;BCBS239, Tagesgeschäft, BW Reporting, Ad-Hoc-Reporting;Portfoliohierarchie 775, MR BW Report Definitionen;;in progress;medium;medium;BCBS239;Tagesgeschäft;BW Reporting;Ad-Hoc-Reporting;Portfoliohierarchie 775;MR BW Report Definitionen;;;;;;
 Segmente für Limit Management;2017;BCBS239, Limit;;Portfoliohierarchie 775;open;low;medium;BCBS239;Limit;;;;;;;Portfoliohierarchie 775;;;
 Risikohierarchie Extraktor;2017;BCBS239, Tagesgeschäft;;Portfoliohierarchie 775;in progress;high;high;BCBS239;Tagesgeschäft;;;;;;;Portfoliohierarchie 775;;;
-Test Reports BW;2017;BCBS239, BW Reporting;;;open;medium;medium;BCBS239;BW Reporting;;;;;;;;;;
+Test Reports BW;2017;BCBS239, BW Reporting;;;open;medium;medium;BCBS239;BW Reporting;;;Portfoliohierarchie 775;;;;;;;
 Portfoliohierarchie 775;2017;BCBS239, BW Reporting;Risikohierarchie Extraktor, Segmente für Limit Management, Reporting Area Market Risk;;in progress;high;high;BCBS239;BW Reporting;;;Risikohierarchie Extraktor;Segmente für Limit Management;Reporting Area Market Risk;;;;;
 MR BW Report Definitionen;2017;BW Reporting, Tagesgeschäft;Reporting Area Market Risk;;in progress;medium;medium;BW Reporting;Tagesgeschäft;;;Reporting Area Market Risk;;;;;;;
 Kommentierung VaR;2018;BW Reporting, Datenqualität;;MR BW Report Definitionen;open;low;low;BW Reporting;Datenqualität;;;;;;;MR BW Report Definitionen;;;

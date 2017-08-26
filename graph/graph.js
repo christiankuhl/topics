@@ -1,51 +1,72 @@
+$.getJSON("topics.json", function(json) {
+    complete_graph = json;
+});
+
+var w = window.innerWidth, h = .8*window.innerHeight,
+fill = d3.scale.category20()
+var vis = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
+
 $( function() {
   $( "input" ).checkboxradio({
     icon: false
   })
-  .on("change", function(event, ui){console.log("Foo!")});
-} );
-
-d3.json("topics.json", function(json){
-    var node_list = ["BCBS239", "BW Reporting", "Datenqualität"]
-    json = filter(json, node_list)
+.on("change", function(event){
+    var node_list = get_filter()
+    var json = filter(complete_graph, node_list)
     display_graph(json);
- });
+});
+});
 
+// $( "controlgroup" ).controlgroup({
+//   direction: "vertical"
+// });
+
+function get_filter(){
+  var selected = [];
+  $('#checkboxes input:checked').each(function() {
+    selected.push($(this).attr('name'));
+  });
+  return selected
+}
 
  function filter(json, node_list){
-     id_list = json.nodes.map(function(d,i){
-        idx = node_list.indexOf(d.name)
-        return idx==-1? -1 : i})
+    //  console.log(json)
+     var json_out = JSON.parse(JSON.stringify(json))
+     var id_list = json_out.nodes.map(function(d,i){
+        var directly_selected = (node_list.indexOf(d.name) != -1)
+        var tag_selected = (d.tags.map(function(t){return node_list.indexOf(t)}).filter(function(f){return f!=-1}).length > 0)
+        return !(directly_selected || tag_selected) ? -1 : i})
         .filter(function(d){return d!=-1})
-     direct_links = json.links.filter(function(d){
+     var direct_links = json_out.links.filter(function(d){
        return id_list.indexOf(d.target) !== -1 || id_list.indexOf(d.source) !== -1
      })
-     selected_nodes = direct_links.reduce(function(a, d){ return a.concat([d.source, d.target]) }, [])
-     indirect_links = json.links.filter(function(d){
+     var selected_nodes = id_list.concat(direct_links.reduce(function(a, d){ return a.concat([d.source, d.target]) }, []))
+     var indirect_links = json_out.links.filter(function(d){
        return selected_nodes.indexOf(d.source) !== -1 && selected_nodes.indexOf(d.target) !== -1
                && direct_links.indexOf(d) === -1
      })
-     json.links = direct_links.concat(indirect_links)
-     tmp_nodes = json.nodes.filter(function(d, i){return selected_nodes.indexOf(i) !== -1})
-     json.links.map(function(d){
+     json_out.links = direct_links.concat(indirect_links)
+     var tmp_nodes = json_out.nodes.filter(function(d, i){return selected_nodes.indexOf(i) !== -1 && (!d.is_tag || node_list.indexOf(d.name) != -1)})
+     var tmp_node_names = tmp_nodes.map(function(t){return t.name})
+     var tmp_links = json_out.links.filter(function(d){
+              return tmp_node_names.indexOf(json.nodes[d.source].name) != -1
+              && tmp_node_names.indexOf(json.nodes[d.target].name) != -1})
+     json_out.links = tmp_links.map(function(d){
        d_tmp = d
-       d_tmp.source = tmp_nodes.indexOf(json.nodes[d.source])
-       d_tmp.target = tmp_nodes.indexOf(json.nodes[d.target])
+       d_tmp.source = tmp_nodes.indexOf(json_out.nodes[d.source])
+       d_tmp.target = tmp_nodes.indexOf(json_out.nodes[d.target])
        return d_tmp})
-     json.nodes = tmp_nodes
-     return json
+     json_out.nodes = tmp_nodes
+     return json_out
  }
 
 function display_graph(json){
-  var w = window.innerWidth, h = window.innerHeight,
-      fill = d3.scale.category20()
 			var labelDistance = 0;
-			var vis = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
 			var nodes = d3.values(json.nodes);
       var labelAnchors = [];
 			var labelAnchorLinks = [];
 			var links = json.links;
-
+      vis.selectAll("*").data([]).exit().remove()
 			for(var i = 0; i < nodes.length; i++) {
         var node = nodes[i]
 				labelAnchors.push({
@@ -137,8 +158,8 @@ function display_graph(json){
 						d.x = d.node.x;
 						d.y = d.node.y;
 					} else {
+            try {
 						var b = this.childNodes[1].getBBox();
-
 						var diffX = d.x - d.node.x;
 						var diffY = d.y - d.node.y;
 						var dist = Math.sqrt(diffX * diffX + diffY * diffY);
@@ -146,22 +167,24 @@ function display_graph(json){
 						shiftX = Math.max(-b.width, Math.min(0, shiftX));
 						var shiftY = 5;
 						this.childNodes[1].setAttribute("transform", "translate(" + shiftX + "," + shiftY + ")");
+          }
+          catch(err) {}
 					}
 				});
 				anchorNode.call(updateNode);
 				link.call(updateLink);
 				anchorLink.call(updateLink);
 			})
-
-      function mouseover() {
-        d3.select(this).select("circle").transition()
-            .duration(750)
-            .attr("r", function(d) { return d.is_tag? 32:16 });
-      }
-
-      function mouseout() {
-        d3.select(this).select("circle").transition()
-            .duration(750)
-            .attr("r", function(d) { return d.is_tag? 16:8 });
-      }
     };
+
+    function mouseover() {
+      d3.select(this).select("circle").transition()
+          .duration(750)
+          .attr("r", function(d) { return d.is_tag? 32:16 });
+    }
+
+    function mouseout() {
+      d3.select(this).select("circle").transition()
+          .duration(750)
+          .attr("r", function(d) { return d.is_tag? 16:8 });
+    }
