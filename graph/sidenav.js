@@ -9,3 +9,19 @@ function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
     document.getElementById("chart").style.marginLeft = "0";
 }
+
+function toggleSelection() {
+  var text = document.getElementById("toggle").innerHTML
+  if (text == "Select All Topics"){
+    document.getElementById("toggle").innerHTML = "Unselect All Topics"
+    $('#checkboxes input').each(function() {
+      $(this).prop("checked",true).change();
+    });
+  }
+  else {
+    document.getElementById("toggle").innerHTML = "Select All Topics"
+    $('#checkboxes input').each(function() {
+      $(this).prop("checked",false).change();
+    });
+  }
+}

@@ -71,9 +71,9 @@ class TopicNetwork(object):
         return TopicNetwork(complex_beast)
 
     def render(self, server="flask"):
-        input_text = "\n".join(["""
+        input_text = "\n".join(["""<li>
         <label for="checkbox-{0}">{1}</label>
-        <input type="checkbox" name="{1}" id="checkbox-{0}">
+        <input type="checkbox" name="{1}" id="checkbox-{0}"></li>
         """.format(*item) for item in enumerate(self.tags)])
         copyfile(app_root + "/graph/graph_template.html",
                         app_root + "/graph/graph.html")

@@ -17,10 +17,6 @@ $( function() {
 });
 });
 
-// $( "controlgroup" ).controlgroup({
-//   direction: "vertical"
-// });
-
 function get_filter(){
   var selected = [];
   $('#checkboxes input:checked').each(function() {
