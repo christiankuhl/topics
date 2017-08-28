@@ -5,8 +5,7 @@ from itertools import combinations
 import json
 from networkx.readwrite import json_graph
 import flask
-import fileinput
-from shutil import copyfile
+import webbrowser
 from config import *
 
 class TopicNetwork(object):
@@ -15,7 +14,7 @@ class TopicNetwork(object):
         self.tags = [self.beast.node[tag]["name"] for tag in self.beast if self.beast.node[tag]["is_tag"]]
 
     def from_csv(filename):
-        with open(filename, "r", encoding='latin_1') as f:
+        with open(filename, "r", encoding='cp1250') as f:
             csv.register_dialect('mine', delimiter=";")
             reader = csv.DictReader(f, dialect="mine")
             topic_list = [line for line in reader]
@@ -71,15 +70,6 @@ class TopicNetwork(object):
         return TopicNetwork(complex_beast)
 
     def render(self, server="flask"):
-        input_text = "\n".join(["""<li>
-        <label for="checkbox-{0}">{1}</label>
-        <input type="checkbox" name="{1}" id="checkbox-{0}"></li>
-        """.format(*item) for item in enumerate(self.tags)])
-        copyfile(app_root + "/graph/graph_template.html",
-                        app_root + "/graph/graph.html")
-        with fileinput.FileInput(app_root + "/graph/graph.html", inplace=True) as file:
-            for line in file:
-                print(line.replace("#INPUTS#", input_text), end='')
         getattr(self, "render_" + server)()
 
     def render_flask(self):
@@ -89,6 +79,7 @@ class TopicNetwork(object):
         @app.route('/<path:path>')
         def static_proxy(path):
             return app.send_static_file(path)
+        webbrowser.open('http://localhost:8000/graph/graph.html')
         app.run(port=8000)
 
 if __name__ == "__main__":
