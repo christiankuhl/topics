@@ -1,21 +1,39 @@
-$.getJSON("topics.json", function(json) {
-    complete_graph = json;
+window.onload = function() {
+  get_data().done(function(){
+  w = window.innerWidth, h = window.innerHeight,
+  fill = d3.scale.category20()
+  vis = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
+  var all_tags = complete_graph.nodes.filter(function(d){ return d.is_tag }).map(function(d) { return d.name })
+  var ul = document.getElementById('checkboxes')
+  for (var i = 1; i < all_tags.length; i++){
+    var li = document.createElement('li');
+    var lbl = document.createElement('label')
+    lbl.htmlFor = "checkbox-" + i
+    lbl.innerHTML = all_tags[i]
+    var checkbox = document.createElement("input")
+    checkbox.type = "checkbox"
+    checkbox.name = all_tags[i]
+    checkbox.id = "checkbox-" + i
+    li.appendChild(lbl)
+    li.appendChild(checkbox)
+    ul.appendChild(li)
+  }
+  $( function() {
+    $( "input" ).checkboxradio({
+      icon: false
+    })
+  .on("change", function(event){
+      var node_list = get_filter()
+      var json = filter(complete_graph, node_list)
+      display_graph(json);
+  });
+  });
 });
+}
 
-var w = window.innerWidth, h = .8*window.innerHeight,
-fill = d3.scale.category20()
-var vis = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
-
-$( function() {
-  $( "input" ).checkboxradio({
-    icon: false
-  })
-.on("change", function(event){
-    var node_list = get_filter()
-    var json = filter(complete_graph, node_list)
-    display_graph(json);
-});
-});
+function get_data(){
+  return $.getJSON("topics.json", function(data){ complete_graph = data })
+}
 
 function get_filter(){
   var selected = [];
@@ -26,7 +44,6 @@ function get_filter(){
 }
 
  function filter(json, node_list){
-    //  console.log(json)
      var json_out = JSON.parse(JSON.stringify(json))
      var id_list = json_out.nodes.map(function(d,i){
         var directly_selected = (node_list.indexOf(d.name) != -1)
@@ -175,12 +192,10 @@ function display_graph(json){
 
     function mouseover() {
       d3.select(this).select("circle").transition()
-          .duration(750)
           .attr("r", function(d) { return d.is_tag? 32:16 });
     }
 
     function mouseout() {
       d3.select(this).select("circle").transition()
-          .duration(750)
           .attr("r", function(d) { return d.is_tag? 16:8 });
     }
